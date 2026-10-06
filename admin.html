@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Knight's Vision Chess Academy</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#05100A; --panel:rgba(255,255,255,.04); --line:rgba(212,175,90,.2);
+  --gold:#D4AF5A; --gold2:#EFD188; --gold-deep:#A8842F;
+  --green:#10684A; --cream:#F4EFE2; --muted:rgba(244,239,226,.6);
+  --red:#C75450;
+}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',sans-serif;line-height:1.5;padding-bottom:110px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(212,175,90,.04) 1px,transparent 1px);background-size:28px 28px}
+::selection{background:var(--gold);color:#171204}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem clamp(1rem,4vw,2.5rem);
+  border-bottom:1px solid var(--line);background:rgba(5,16,10,.85);position:sticky;top:0;z-index:50;
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:.7rem}
+.brand img{height:40px}
+.brand b{font-family:'Cinzel',serif;letter-spacing:.08em;font-size:.98rem}
+.brand b span{display:block;font-family:'Outfit',sans-serif;font-size:.6rem;letter-spacing:.4em;color:var(--gold);font-weight:600}
+.view-site{color:var(--gold2);text-decoration:none;font-size:.9rem;font-weight:500;border:1px solid var(--line);
+  padding:.5rem 1.05rem;border-radius:999px;transition:.3s}
+.view-site:hover{background:rgba(212,175,90,.12)}
+
+main{max-width:880px;margin:0 auto;padding:1.6rem clamp(.9rem,3vw,1.5rem)}
+.tabs{display:flex;gap:.6rem;margin-bottom:1.5rem}
+.tabs button{flex:1;padding:.85rem;border-radius:14px;border:1px solid rgba(244,239,226,.15);background:var(--panel);
+  color:var(--muted);font-family:'Outfit',sans-serif;font-weight:600;font-size:1rem;cursor:pointer;transition:.3s}
+.tabs button.on{background:rgba(212,175,90,.14);border-color:var(--gold);color:var(--gold2)}
+
+.card{background:var(--panel);border:1px solid rgba(244,239,226,.1);border-radius:18px;padding:1.2rem;margin-bottom:1rem}
+.card h3{font-size:1.05rem;margin-bottom:.9rem;color:var(--gold2);font-weight:600}
+label{display:block;font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);
+  font-weight:600;margin:.8rem 0 .3rem}
+input[type=text],input[type=url],textarea{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(244,239,226,.18);
+  border-radius:10px;color:var(--cream);font-family:'Outfit',sans-serif;font-size:.95rem;padding:.65rem .8rem;outline:none;transition:border .3s}
+input:focus,textarea:focus{border-color:var(--gold)}
+textarea{resize:vertical;min-height:64px}
+.hint{font-size:.78rem;color:rgba(244,239,226,.4);margin-top:.3rem}
+
+.btn{display:inline-flex;align-items:center;gap:.45rem;border:none;cursor:pointer;border-radius:999px;
+  font-family:'Outfit',sans-serif;font-weight:600;font-size:.92rem;padding:.7rem 1.4rem;transition:.3s;text-decoration:none}
+.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold) 55%,var(--gold-deep));color:#1A1505}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px -8px rgba(212,175,90,.5)}
+.btn-ghost{background:rgba(255,255,255,.04);border:1px solid rgba(244,239,226,.25);color:var(--cream)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold2)}
+.btn-sm{padding:.4rem .7rem;font-size:.82rem;border-radius:9px}
+.btn-red{background:rgba(199,84,80,.15);border:1px solid rgba(199,84,80,.5);color:#E89B98}
+.btn-red:hover{background:rgba(199,84,80,.3)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+
+.drop{border:2px dashed rgba(212,175,90,.4);border-radius:14px;padding:1.2rem;text-align:center;cursor:pointer;
+  color:var(--muted);transition:.3s;font-size:.92rem}
+.drop:hover,.drop.over{background:rgba(212,175,90,.07);border-color:var(--gold)}
+.drop input{display:none}
+.preview{max-height:170px;border-radius:10px;margin:0 auto .6rem;display:none}
+
+.item{display:grid;grid-template-columns:86px 1fr auto;gap:.9rem;align-items:start;background:var(--panel);
+  border:1px solid rgba(244,239,226,.1);border-radius:14px;padding:.9rem;margin-bottom:.7rem}
+.item img.thumb{width:86px;height:86px;object-fit:cover;border-radius:10px;border:1px solid rgba(212,175,90,.3)}
+.item .fields{min-width:0}
+.item .fields label{margin-top:.5rem}
+.item .fields label:first-child{margin-top:0}
+.rowbtns{display:flex;flex-direction:column;gap:.4rem}
+.rowbtns button{width:34px;height:34px;display:grid;place-items:center;font-size:1rem;border-radius:9px;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(244,239,226,.2);color:var(--cream);transition:.25s}
+.rowbtns button:hover{border-color:var(--gold);color:var(--gold2)}
+.rowbtns button.del:hover{border-color:var(--red);color:#E89B98}
+.empty{text-align:center;color:var(--muted);padding:1.6rem;font-size:.95rem}
+
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.pgrid .full{grid-column:1/-1}
+.pop-check{display:flex;align-items:center;gap:.55rem;margin-top:.9rem;font-size:.9rem;color:var(--gold2);cursor:pointer;user-select:none}
+.pop-check input{width:17px;height:17px;accent-color:#D4AF5A;cursor:pointer}
+
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(5,16,10,.92);border-top:1px solid var(--line);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);padding:.85rem clamp(1rem,4vw,2.5rem);
+  display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+#status{font-size:.86rem;color:var(--muted);flex:1;min-width:160px}
+#status.ok{color:#8FD6A8}
+#status.err{color:#E89B98}
+@media (max-width:620px){.item{grid-template-columns:64px 1fr}.rowbtns{flex-direction:row;grid-column:1/-1}.pgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <img src="logo-knight.png" alt="">
+    <b>KNIGHT'S VISION <span>ADMIN PANEL</span></b>
+  </div>
+  <a class="view-site" href="index.html" target="_blank">View website ↗</a>
+</header>
+
+<main>
+  <div class="tabs">
+    <button id="tabG" class="on" type="button">🖼 Gallery</button>
+    <button id="tabP" type="button">♟ Programs</button>
+  </div>
+
+  <!-- GALLERY TAB -->
+  <section id="paneG">
+    <div class="card">
+      <h3>Add a new achievement</h3>
+      <img id="prev" class="preview" alt="">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/*">
+        <span id="dropTxt">📷 Click to choose a photo (or drag &amp; drop here)</span>
+      </label>
+      <label for="gurl">…or paste a photo link (image URL)</label>
+      <input type="url" id="gurl" placeholder="https://... (.jpg / .png, or a Google Drive share link)">
+      <p class="hint">Google Drive: set the file to “Anyone with the link can view”, then paste its share link. Photos added by link stay small in data.js, but they disappear if the original is deleted.</p>
+      <label for="gdesc">Description</label>
+      <textarea id="gdesc" placeholder="e.g. Aarav wins U-9 District Championship 2026 🏆"></textarea>
+      <label for="glink">Instagram post link</label>
+      <input type="url" id="glink" placeholder="https://www.instagram.com/p/...">
+      <p class="hint">Open the Instagram post → ⋯ → Copy link, and paste it here. Visitors who click the photo will be taken to this post.</p>
+      <div style="margin-top:1rem"><button class="btn btn-gold" id="addG" type="button" disabled>＋ Add to gallery</button></div>
+    </div>
+    <div id="glist"></div>
+  </section>
+
+  <!-- PROGRAMS TAB -->
+  <section id="paneP" hidden>
+    <div id="plist"></div>
+    <button class="btn btn-ghost" id="addP" type="button">＋ Add a program</button>
+  </section>
+</main>
+
+<div class="savebar">
+  <span id="status">Make your changes, then save.</span>
+  <button class="btn btn-ghost" id="discard" type="button">Discard changes</button>
+  <button class="btn btn-ghost" id="download" type="button">⬇ Download data.js</button>
+  <button class="btn btn-gold" id="save" type="button">💾 Save to website</button>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+"use strict";
+const $ = s => document.querySelector(s);
+const seed = window.KV_DATA || {};
+const state = {
+  gallery: JSON.parse(JSON.stringify(seed.gallery || [])),
+  programs: JSON.parse(JSON.stringify(seed.programs || []))
+};
+state.programs.forEach(p => { delete p.price; delete p.per; });
+let fileHandle = null, newPhoto = null;
+
+/* ---------- tabs ---------- */
+const tabG = $('#tabG'), tabP = $('#tabP'), paneG = $('#paneG'), paneP = $('#paneP');
+tabG.onclick = () => { tabG.classList.add('on'); tabP.classList.remove('on'); paneG.hidden = false; paneP.hidden = true; };
+tabP.onclick = () => { tabP.classList.add('on'); tabG.classList.remove('on'); paneP.hidden = false; paneG.hidden = true; };
+
+/* ---------- status ---------- */
+function setStatus(t, cls){ const s = $('#status'); s.textContent = t; s.className = cls || ''; }
+
+/* ---------- image picking + compression ---------- */
+const drop = $('#drop'), file = $('#file'), prev = $('#prev');
+['dragover','dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
+file.addEventListener('change', () => { if (file.files[0]) handleFile(file.files[0]); });
+
+function handleFile(f){
+  if (!f.type.startsWith('image/')){ setStatus('That file is not an image.', 'err'); return; }
+  const img = new Image();
+  img.onload = () => {
+    const MAX = 1280;
+    let w = img.width, h = img.height;
+    if (Math.max(w,h) > MAX){ const k = MAX/Math.max(w,h); w = Math.round(w*k); h = Math.round(h*k); }
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    newPhoto = c.toDataURL('image/jpeg', .82); if (window.gurlClear) window.gurlClear();
+    prev.src = newPhoto; prev.style.display = 'block';
+    $('#dropTxt').textContent = '📷 Photo ready – choose another to replace';
+    $('#addG').disabled = false;
+    URL.revokeObjectURL(img.src);
+  };
+  img.onerror = () => setStatus('Could not read that image.', 'err');
+  img.src = URL.createObjectURL(f);
+}
+
+/* ---------- photo by URL ---------- */
+const gurl = $('#gurl'); window.gurlClear = () => { gurl.value = ''; };
+function normUrl(u){
+  u = u.trim(); if (!u) return '';
+  if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+  const m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]+)/i);
+  if (m) u = 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w1280';
+  return u;
+}
+gurl.addEventListener('change', () => {
+  const u = normUrl(gurl.value);
+  if (!u){ return; }
+  const test = new Image();
+  test.onload = () => {
+    newPhoto = u; file.value = '';
+    prev.src = u; prev.style.display = 'block';
+    $('#dropTxt').textContent = '📷 Using photo from link – or choose a file to replace';
+    $('#addG').disabled = false; setStatus('Photo link loaded.', 'ok');
+  };
+  test.onerror = () => setStatus('Could not load an image from that link. Check it is a direct, public image link.', 'err');
+  test.src = u;
+});
+
+/* ---------- gallery add ---------- */
+$('#addG').onclick = () => {
+  if (!newPhoto){ setStatus('Choose a photo first.', 'err'); return; }
+  let link = $('#glink').value.trim();
+  if (link && !/^https?:\/\//i.test(link)) link = 'https://' + link;
+  state.gallery.unshift({ photo: newPhoto, desc: $('#gdesc').value.trim(), link: link });
+  newPhoto = null; prev.style.display = 'none'; file.value = '';
+  $('#gdesc').value = ''; $('#glink').value = ''; gurl.value = '';
+  $('#dropTxt').textContent = '📷 Click to choose a photo (or drag & drop here)';
+  $('#addG').disabled = true;
+  renderG(); setStatus('Added – remember to save.', 'ok');
+};
+
+/* ---------- gallery list ---------- */
+function renderG(){
+  const list = $('#glist'); list.innerHTML = '';
+  if (!state.gallery.length){
+    list.innerHTML = '<div class="empty">No photos yet. Add your first achievement above – the Gallery section appears on the website automatically once you save.</div>';
+    return;
+  }
+  state.gallery.forEach((g, i) => {
+    const it = document.createElement('div'); it.className = 'item';
+    const im = document.createElement('img'); im.className = 'thumb'; im.src = g.photo; it.appendChild(im);
+    const fields = document.createElement('div'); fields.className = 'fields';
+    const l1 = document.createElement('label'); l1.textContent = 'Description';
+    const ta = document.createElement('textarea'); ta.value = g.desc || '';
+    ta.oninput = () => { g.desc = ta.value; };
+    const l2 = document.createElement('label'); l2.textContent = 'Instagram link';
+    const inp = document.createElement('input'); inp.type = 'url'; inp.value = g.link || '';
+    inp.oninput = () => { g.link = inp.value.trim(); };
+    fields.append(l1, ta, l2, inp);
+    it.appendChild(fields);
+    it.appendChild(rowBtns(state.gallery, i, renderG));
+    list.appendChild(it);
+  });
+}
+
+/* ---------- shared up/down/delete ---------- */
+function rowBtns(arr, i, rerender){
+  const box = document.createElement('div'); box.className = 'rowbtns';
+  const up = document.createElement('button'); up.textContent = '↑'; up.title = 'Move up'; up.type = 'button';
+  up.onclick = () => { if (i > 0){ [arr[i-1], arr[i]] = [arr[i], arr[i-1]]; rerender(); } };
+  const dn = document.createElement('button'); dn.textContent = '↓'; dn.title = 'Move down'; dn.type = 'button';
+  dn.onclick = () => { if (i < arr.length-1){ [arr[i+1], arr[i]] = [arr[i], arr[i+1]]; rerender(); } };
+  const del = document.createElement('button'); del.textContent = '✕'; del.title = 'Delete'; del.className = 'del'; del.type = 'button';
+  del.onclick = () => { if (confirm('Delete this item?')){ arr.splice(i,1); rerender(); } };
+  box.append(up, dn, del);
+  return box;
+}
+
+/* ---------- programs ---------- */
+function renderP(){
+  const list = $('#plist'); list.innerHTML = '';
+  if (!state.programs.length){
+    list.innerHTML = '<div class="empty">No programs. Add one below.</div>';
+  }
+  state.programs.forEach((p, i) => {
+    const card = document.createElement('div'); card.className = 'card';
+    const grid = document.createElement('div'); grid.className = 'pgrid';
+    grid.append(
+      fld('Program name', p.title, v => p.title = v),
+      fld('Mode (e.g. In-Person)', p.mode, v => p.mode = v),
+      fld('Button text', p.btn, v => p.btn = v, false),
+      fldArea('WhatsApp message when clicked', p.wa, v => p.wa = v),
+      fldArea('Features – one per line', (p.features || []).join('\n'), v => p.features = v.split('\n').map(x => x.trim()).filter(Boolean), true)
+    );
+    card.appendChild(grid);
+    const pop = document.createElement('label'); pop.className = 'pop-check';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!p.popular;
+    cb.onchange = () => { state.programs.forEach(x => x.popular = false); p.popular = cb.checked; renderP(); };
+    pop.append(cb, document.createTextNode(' ★ Mark as “Most Popular” (gold highlight)'));
+    card.appendChild(pop);
+    const bar = document.createElement('div'); bar.style.cssText = 'display:flex;gap:.5rem;margin-top:1rem';
+    const btns = rowBtns(state.programs, i, renderP); btns.style.flexDirection = 'row';
+    bar.appendChild(btns);
+    card.appendChild(bar);
+    list.appendChild(card);
+  });
+  function fld(lbl, val, set, half){
+    const w = document.createElement('div');
+    const l = document.createElement('label'); l.textContent = lbl;
+    const inp = document.createElement('input'); inp.type = 'text'; inp.value = val || '';
+    inp.oninput = () => set(inp.value);
+    w.append(l, inp); return w;
+  }
+  function fldArea(lbl, val, set, full){
+    const w = document.createElement('div'); if (full) w.className = 'full'; else w.className = 'full';
+    const l = document.createElement('label'); l.textContent = lbl;
+    const ta = document.createElement('textarea'); ta.value = val || '';
+    ta.oninput = () => set(ta.value);
+    w.append(l, ta); return w;
+  }
+}
+$('#addP').onclick = () => {
+  state.programs.push({ title:'New Program', mode:'In-Person',
+    features:['Day – time','1 hour per class'], popular:false, btn:'Join Batch',
+    wa:"Hi! I'm interested in the new program at Knight's Vision Chess Academy." });
+  renderP();
+  setStatus('Program added – remember to save.', 'ok');
+};
+
+/* ---------- save ---------- */
+function serialize(){
+  return 'window.KV_DATA = ' + JSON.stringify({ gallery: state.gallery, programs: state.programs }, null, 2) + ';\n';
+}
+async function saveDirect(){
+  if (!window.showSaveFilePicker){ downloadFile(); return; }
+  try {
+    if (!fileHandle){
+      fileHandle = await window.showSaveFilePicker({
+        suggestedName: 'data.js',
+        types: [{ description: 'JavaScript file', accept: { 'text/javascript': ['.js'] } }]
+      });
+    }
+    const w = await fileHandle.createWritable();
+    await w.write(serialize());
+    await w.close();
+    setStatus('✓ Saved! Refresh the website (Ctrl+F5) to see your changes.', 'ok');
+  } catch (e) {
+    if (e && e.name === 'AbortError'){ setStatus('Save cancelled.'); return; }
+    fileHandle = null;
+    downloadFile();
+  }
+}
+function downloadFile(){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([serialize()], { type: 'text/javascript' }));
+  a.download = 'data.js';
+  a.click();
+  setStatus('Downloaded data.js – move it into your website folder, replacing the old one.', 'ok');
+}
+$('#save').onclick = () => {
+  setStatus('Choose the data.js file inside your website folder and overwrite it…');
+  saveDirect();
+};
+$('#download').onclick = downloadFile;
+$('#discard').onclick = () => { if (confirm('Discard all unsaved changes?')) location.reload(); };
+window.addEventListener('beforeunload', e => {
+  if (serialize() !== 'window.KV_DATA = ' + JSON.stringify({ gallery: seed.gallery || [], programs: seed.programs || [] }, null, 2) + ';\n'){
+    e.preventDefault(); e.returnValue = '';
+  }
+});
+
+renderG(); renderP();
+})();
+</script>
+</body>
+</html>
