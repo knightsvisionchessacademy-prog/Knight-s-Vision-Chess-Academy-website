@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://knight-s-vision-chess-academy-websi.vercel.app/sitemap.xml
